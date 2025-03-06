@@ -373,6 +373,36 @@ def passing_network(df):
 
 
 
+def ball_recovery(df):
+      df=df[df["tag_name"]== "ball recovery"]
+      robotto_regular = FontManager()
+      path_eff = [path_effects.Stroke(linewidth=1.5, foreground='black'),
+            path_effects.Normal()]
+      DIFF_LINEWIDTH = 2.2  # amount the glow linewidth increases each loop
+      NUM_GLOW_LINES = 3  # the amount of loops, if you increase the glow will be wider
+      LINEWIDTH = 0.3
+      ALPHA_PITCH_LINE = 0.2
+      ALPHA_PASS_LINE = 1
+      text_color='#F5F5DC'
+      flamingo_cmap = LinearSegmentedColormap.from_list("Flamingo - 100 colors",
+                                                  ['black','#394a13' ,'#a4e610','white'], N=100)
+    
+      back='black'#'#73737
+      pitch = VerticalPitch(line_color="w", pitch_color=back,line_zorder=2, linestyle='-',half=True)
+      fig, axs= pitch.grid(grid_height=0.6, title_height=0.05,  axis=False,
+                     endnote_height=0.04, title_space=0, endnote_space=0,grid_width=0.88,figheight= 10)
+      fig.set_facecolor(back)
+      bin_statistic = pitch.bin_statistic(df.x, df.y, statistic='count', bins=(25, 25))
+      bin_statistic['statistic'] = gaussian_filter(bin_statistic['statistic'], 1)
+      pcm = pitch.heatmap(bin_statistic, ax=axs['pitch'], cmap='hot', edgecolors='#22312b',label=f' entries')
+      axs['endnote'].text(1, 0.3, 'Created by Sara Bentelli', va='center', ha='right', fontsize=10,
+                    fontproperties=robotto_regular.prop, color='#F5F5DC')
+      axs['endnote'].text(0.26, 0.3, 'Analyst Bashar Ziab', va='center', ha='right', fontsize=15,
+                    fontproperties=robotto_regular.prop, color='#F5F5DC')
+      axs['title'].text(0.5, 0.6,'Ball Recovery', color='#F5F5DC',fontsize=25,va='center', ha='center', path_effects=path_eff,
+                             fontproperties=robotto_regular.prop)
+      #pitch.scatter(df.x,df.y, ax=axs['pitch'][1],s=450,c='w',edgecolor='green',salpha=.7)
+      return st.pyplot(fig, dpi=100, facecolor= back ,bbox_inches=None)
 
 
 
