@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-from fonctions import passe, shot, pass_cross,succ_pass, ball_loss,final_third_entries,passing_network
+from fonctions import passe, shot, pass_cross,succ_pass, ball_loss,final_third_entries,passing_network,ball_recovery
 
 
 import base64
@@ -149,6 +149,9 @@ if uploaded_file is not None:
         final_third_entries(df_team_selected)
     elif selected_plot == "Passing Network" :
         passing_network(df_team_selected)
+    elif selected_plot == "Ball Recovery" :
+        ball_recovery(df_team_selected)
+    
     
 
 
