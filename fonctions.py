@@ -422,6 +422,54 @@ def ball_recovery(df):
 
       
 
+def passcross(df):
+   robotto_regular = FontManager()
+   path_eff = [path_effects.Stroke(linewidth=1.5, foreground='black'),path_effects.Normal()]
+   mask=(df.typeId=='Attempt Saved')
+   df=df[mask]
+   ### LINEWIDTH = 1  # starting linewidth
+   DIFF_LINEWIDTH = 2.2  # amount the glow linewidth increases each loop
+   NUM_GLOW_LINES = 3  # the amount of loops, if you increase the glow will be wider
+   LINEWIDTH = 0.3
+# in each loop, for the glow, we plot the alpha divided by the num_glow_lines
+# I have a lower alpha_pass_line value as there is a slight overlap in
+# the pass comet lines when using capstyle='round'
+   ALPHA_PITCH_LINE = 0.2
+   ALPHA_PASS_LINE = 1
+
+   flamingo_cmap = LinearSegmentedColormap.from_list("Flamingo - 100 colors",
+                                                  ['#064534','#e88013' ,'white'], N=100)
+   PASS_COLOR = 'w'#"pink" #'#89103F'   
+   LINE_COLOR =  'w'#"#0FF4FF" #'#BF7117'  #'#FE53BB' 
+   DIVISION_LINES='#800080'
+   back='black'#'#73737
+   pitch = VerticalPitch(line_color=LINE_COLOR, pitch_color=back,line_zorder=2, linestyle='-',half=True)
+   fig, axs= pitch.grid(figheight=10, title_height=0.08, endnote_space=0,
+                      # Turn off the endnote/title axis. I usually do this after
+                      # I am happy with the chart layout and text placement
+                      axis=False,
+                      title_space=0, grid_height=0.82, endnote_height=0.05,grid_width=0.88)
+   fig.set_facecolor(back)
+    
+   #pitch.lines(df.x,df.y,df.end_x,df.end_y,ax=axs['pitch'],capstyle='butt',  # cut-off the line at the end-location.
+            #linewidth=LINEWIDTH, color=PASS_COLOR,label='Crosses')
+   pitch.scatter(df.x,df.y, color="w",s=450,marker="o",alpha=.8,label='Saved',ax=axs['pitch'])
+   for i in range(1, NUM_GLOW_LINES + 1):
+       pitch = VerticalPitch(line_color=LINE_COLOR, pitch_color=back,half=True,
+                  linewidth=LINEWIDTH + (DIFF_LINEWIDTH * i),
+                  line_alpha=ALPHA_PITCH_LINE / NUM_GLOW_LINES,
+                  goal_alpha=ALPHA_PITCH_LINE / NUM_GLOW_LINES,
+                  goal_type='box')
+    
+   pitch.draw(ax=axs['pitch'])  # we plot on-top of our previous axis from pitch.grid
+  
+   axs['title'].text(0.5, 0.6,'Attempt Saved', color='#F5F5DC',fontsize=35,va='center', ha='center', path_effects=path_eff,
+                             fontproperties=robotto_regular.prop)
+   axs['endnote'].text(1, 0.3, 'Created by Sara Bentelli', va='center', ha='right', fontsize=13,
+                    fontproperties=robotto_regular.prop, color='#F5F5DC')
+   axs['endnote'].text(0.2, 0.3, '', va='center', ha='right', fontsize=15,
+                    fontproperties=robotto_regular.prop, color='#F5F5DC')
+   return st.pyplot(fig, dpi=100, facecolor= back ,bbox_inches=None)
 
 
 
